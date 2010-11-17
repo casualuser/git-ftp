@@ -210,11 +210,12 @@ def upload_all(tree, ftp, base):
         upload_all(subtree, ftp, '/'.join((base, subtree.name)))
 
     ftp.cwd(base)
+    target = '/'.join((base, blob.name))
     for blob in tree.blobs:
         logging.info('Uploading ' + '/'.join((base, blob.name)))
-        
+
         try:
-            ftp.delete(blob.name)
+            ftp.delete(target)
         except ftplib.error_perm:
             logging.info('Non existent or error trying to delete: ' + blob.name)
         
@@ -228,7 +229,6 @@ def upload_all(tree, ftp, base):
         except ftplib.error_perm:
             logging.info('Error trying to change permissions for: ' + blob.name)
             
-
 def upload_diff(diff, tree, ftp, base):
     """Upload and/or delete items according to a Git diff.
 
