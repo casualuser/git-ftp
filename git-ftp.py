@@ -196,8 +196,8 @@ def upload_all(tree, ftp, base):
         upload_all(subtree, ftp, '/'.join((base, subtree.name)))
 
     ftp.cwd(base)
-    target = '/'.join((base, blob.name))
     for blob in tree.blobs:
+        target = '/'.join((base, blob.name))
         logging.info('Uploading ' + target)
         try:
             ftp.delete(target)
