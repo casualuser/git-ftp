@@ -227,7 +227,7 @@ def upload_all(tree, ftp, base):
             ftp.voidcmd('SITE CHMOD ' + format_mode(blob.mode) + ' ' + blob.name)
         except ftplib.error_perm:
             logging.info('Error trying to change permissions for: ' + blob.name)
-            
+
 def upload_diff(diff, tree, ftp, base):
     """Upload and/or delete items according to a Git diff.
 
