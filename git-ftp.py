@@ -201,10 +201,10 @@ def upload_all(tree, ftp, base):
         logging.info('Uploading ' + target)
         try:
             ftp.delete(target)
+            ftp.storbinary('STOR ' + target, blob.data_stream)
+            ftp.voidcmd('SITE CHMOD ' + format_mode(blob.mode) + ' ' + target)
         except ftplib.error_perm:
-            pass
-        ftp.storbinary('STOR ' + target, blob.data_stream)
-        ftp.voidcmd('SITE CHMOD ' + format_mode(blob.mode) + ' ' + target)
+            logging.info('Permission error trying to access: ' + target)
 
 def upload_diff(diff, tree, ftp, base):
     """Upload and/or delete items according to a Git diff.
