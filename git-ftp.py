@@ -197,14 +197,23 @@ def upload_all(tree, ftp, base):
 
     ftp.cwd(base)
     for blob in tree.blobs:
-        target = '/'.join((base, blob.name))
-        logging.info('Uploading ' + target)
+        logging.info('Uploading ' + '/'.join((base, blob.name)))
+        
         try:
-            ftp.delete(target)
-            ftp.storbinary('STOR ' + target, blob.data_stream)
-            ftp.voidcmd('SITE CHMOD ' + format_mode(blob.mode) + ' ' + target)
+            ftp.delete(blob.name)
         except ftplib.error_perm:
-            logging.info('Permission error trying to access: ' + target)
+            logging.info('Non existent or error trying to delete: ' + blob.name)
+        
+        try:
+            ftp.storbinary('STOR ' + blob.name, blob.data_stream)
+        except ftplib.error_perm:
+            logging.info('Error trying to upload: ' + blob.name)
+        
+        try:
+            ftp.voidcmd('SITE CHMOD ' + format_mode(blob.mode) + ' ' + blob.name)
+        except ftplib.error_perm:
+            logging.info('Error trying to change permissions for: ' + blob.name)
+            
 
 def upload_diff(diff, tree, ftp, base):
     """Upload and/or delete items according to a Git diff.
