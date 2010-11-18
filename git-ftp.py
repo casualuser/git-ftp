@@ -214,7 +214,7 @@ def upload_all(tree, ftp, base):
         logging.info('Uploading ' + '/'.join((base, blob.name)))
 
         try:
-            ftp.delete(target)
+            ftp.delete(blob.name)
         except ftplib.error_perm:
             logging.info('Non existent or error trying to delete: ' + blob.name)
         
