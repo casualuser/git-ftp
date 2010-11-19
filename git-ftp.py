@@ -128,6 +128,14 @@ def format_mode(mode):
     return "%o" % (mode & 0o777)
 
 class FtpData():
+    
+    def __str__( self ) :
+      return "[master]\n" + \
+        "username=" + self.username + "\n" + \
+        "password=" + self.password + "\n" + \
+        "hostname=" + self.hostname + "\n" + \
+        "remotepath=" + self.remotepath + "\n"
+         
     password = None
     username = None
     hostname = None
@@ -175,6 +183,12 @@ def get_ftp_creds(repo, options):
         options.ftp.password = getpass.getpass('FTP Password: ')
         options.ftp.hostname = raw_input('FTP Hostname: ')
         options.ftp.remotepath = raw_input('Remote Path: ')
+   
+        #set default branch
+        if ask_ok("Should I write ftp details to .git/ftpdata? [Y/N]"):
+            f = open(ftpdata, 'w')
+            f.write(str(options.ftp))
+        
 
 def upload_all(tree, ftp, base):
     """Upload all items in a Git tree.
@@ -275,6 +289,18 @@ def upload_diff(diff, tree, ftp, base):
             ftp.voidcmd('SITE CHMOD ' + format_mode(node.mode) + ' ' + file)
             # Don't do anything if there isn't any item; maybe it
             # was deleted.
+
+def ask_ok(prompt, retries=4, complaint='Yes or no, please!'):
+    while True:
+        ok = raw_input(prompt)
+        if ok in ('y', 'ye', 'yes'):
+            return True
+        if ok in ('n', 'no', 'nop', 'nope'):
+            return False
+        retries = retries - 1
+        if retries < 0:
+            raise IOError('refusenik user')
+        print complaint
 
 if __name__ == "__main__":
     main()
