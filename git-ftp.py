@@ -186,16 +186,6 @@ def get_ftp_creds(repo, options):
         options.ftp.password = getpass.getpass('FTP Password: ')
         options.ftp.hostname = raw_input('FTP Hostname: ')
         options.ftp.remotepath = raw_input('Remote Path: ')
-   
-        #set default branch
-        if ask_ok("Should I write ftp details to .git/ftpdata? "):
-            cfg.add_section(options.branch)
-            cfg.set(options.branch, 'username', options.ftp.username)
-            cfg.set(options.branch, 'password', options.ftp.password)
-            cfg.set(options.branch, 'hostname', options.ftp.hostname)
-            cfg.set(options.branch, 'remotepath', options.ftp.remotepath)
-            f = open(ftpdata, 'w')
-            cfg.write(f)
 
         # set default branch
         if ask_ok("Should I write ftp details to .git/ftpdata? "):
@@ -315,17 +305,6 @@ def ask_ok(prompt, retries=4, complaint='Yes or no, please!'):
             raise IOError('Wrong user input.')
         print complaint
 
-def ask_ok(prompt, retries=4, complaint='Yes or no, please!'):
-    while True:
-        ok = raw_input(prompt).lower()
-        if ok in ('y', 'ye', 'yes'):
-            return True
-        if ok in ('n', 'no', 'nop', 'nope'):
-            return False
-        retries = retries - 1
-        if retries < 0:
-            raise IOError('Wrong user input.')
-        print complaint
-
 if __name__ == "__main__":
     main()
+
